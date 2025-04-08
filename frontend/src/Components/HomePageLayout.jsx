@@ -1,11 +1,11 @@
 import React from "react";
 import { Outlet } from "react-router";
-import AppHeader from "./AppHeader";
+import Navbar from "./AppHeader";
 
 const HomePageLayout = () => {
   return (
     <>
-      <AppHeader />
+      <Navbar />
       <Outlet />
     </>
   );

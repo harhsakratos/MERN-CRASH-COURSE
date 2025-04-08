@@ -1,13 +1,14 @@
 import {
   Box,
+  Button,
   Container,
   Heading,
   Input,
   useColorModeValue,
+  useToast,
   VStack,
-  Button,
 } from "@chakra-ui/react";
-import React, { useState } from "react";
+import { useState } from "react";
 import { useProductStore } from "../store/product";
 
 const CreatePage = () => {
@@ -16,20 +17,37 @@ const CreatePage = () => {
     price: "",
     image: "",
   });
+  const toast = useToast();
 
-  const createProduct = useProductStore((state) => state.createProduct);
+  const { createProduct } = useProductStore();
 
   const handleAddProduct = async () => {
-    const [success, message] = await createProduct(newProduct);
-    console.log("success:", success, "message:", message);
+    const { success, message } = await createProduct(newProduct);
+    if (!success) {
+      toast({
+        title: "Error",
+        description: message,
+        status: "error",
+        isClosable: true,
+      });
+    } else {
+      toast({
+        title: "Success",
+        description: message,
+        status: "success",
+        isClosable: true,
+      });
+    }
+    setNewProduct({ name: "", price: "", image: "" });
   };
 
   return (
-    <Container>
+    <Container maxW={"container.sm"}>
       <VStack spacing={8}>
         <Heading as={"h1"} size={"2xl"} textAlign={"center"} mb={8}>
           Create New Product
         </Heading>
+
         <Box
           w={"full"}
           bg={useColorModeValue("white", "gray.800")}
@@ -42,9 +60,9 @@ const CreatePage = () => {
               placeholder="Product Name"
               name="name"
               value={newProduct.name}
-              onChange={(e) => {
-                setNewProduct({ ...newProduct, name: e.target.value });
-              }}
+              onChange={(e) =>
+                setNewProduct({ ...newProduct, name: e.target.value })
+              }
             />
             <Input
               placeholder="Price"
@@ -73,5 +91,4 @@ const CreatePage = () => {
     </Container>
   );
 };
-
 export default CreatePage;
